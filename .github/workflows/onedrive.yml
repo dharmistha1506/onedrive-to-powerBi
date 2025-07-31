@@ -1,0 +1,19 @@
+name: Combine OneDrive CSVs
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  combine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: pip install pandas requests msal
+      - run: python scripts/download_onedrive.py
+      - run: python scripts/combine_csv.py
+      - run: python scripts/upload_onedrive.py
