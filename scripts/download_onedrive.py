@@ -4,7 +4,7 @@ from msal import ConfidentialClientApplication
 
 CLIENT_ID = os.environ["ONEDRIVE_CLIENT_ID"]
 TENANT_ID = os.environ["ONEDRIVE_TENANT_ID"]
-CLIENT_SECRET = os.environ["SECRET_VALUE_VARIABLE"]
+CLIENT_SECRET = os.environ["ONEDRIVE_CLIENT_SECRET"]
 
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
 SCOPES = ["https://graph.microsoft.com/.default"]
