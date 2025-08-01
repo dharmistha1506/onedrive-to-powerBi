@@ -2,16 +2,15 @@ import os
 import requests
 from msal import ConfidentialClientApplication
 
-# Read secrets from environment (provided by GitHub)
+# Read secrets from environment
 CLIENT_ID = os.environ["ONEDRIVE_CLIENT_ID"]
-TENANT_ID = os.environ["ONEDRIVE_TENANT_ID"]
 CLIENT_SECRET = os.environ["ONEDRIVE_CLIENT_SECRET"]
 
-# Microsoft Graph API setup
-AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
+# For personal Microsoft accounts
+AUTHORITY = "https://login.microsoftonline.com/consumers"
 SCOPES = ["https://graph.microsoft.com/.default"]
 
-# Authenticate and get access token
+# Authenticate
 app = ConfidentialClientApplication(
     CLIENT_ID, authority=AUTHORITY, client_credential=CLIENT_SECRET
 )
@@ -24,16 +23,15 @@ if "access_token" not in result:
 token = result["access_token"]
 headers = {"Authorization": f"Bearer {token}"}
 
-# --- FILES TO DOWNLOAD FROM PERSONAL ONEDRIVE "MY FILES" ---
+# Files in OneDrive (My Files)
 files = [
     ("work_hour_data", "tft_with_lead_2025-07-10.csv"),
     ("emp_details", "summary_2025-07-11.csv"),
     ("dept_tft_work_hour", "dept_tft_intern_count_2025-07-10.csv"),
 ]
 
-# Download each file
+# Download
 for folder, filename in files:
-    # PERSONAL ONEDRIVE: Do NOT use "Documents/"
     url = f"https://graph.microsoft.com/v1.0/me/drive/root:/{folder}/{filename}:/content"
     out_dir = f"data/{folder}"
     os.makedirs(out_dir, exist_ok=True)
