@@ -2,31 +2,39 @@ import os
 import requests
 from msal import ConfidentialClientApplication
 
+# Read secrets from environment (provided by GitHub)
 CLIENT_ID = os.environ["ONEDRIVE_CLIENT_ID"]
 TENANT_ID = os.environ["ONEDRIVE_TENANT_ID"]
 CLIENT_SECRET = os.environ["ONEDRIVE_CLIENT_SECRET"]
 
+# Microsoft Graph API setup
 AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
 SCOPES = ["https://graph.microsoft.com/.default"]
 
-app = ConfidentialClientApplication(CLIENT_ID, authority=AUTHORITY, client_credential=CLIENT_SECRET)
-
+# Authenticate and get access token
+app = ConfidentialClientApplication(
+    CLIENT_ID, authority=AUTHORITY, client_credential=CLIENT_SECRET
+)
 result = app.acquire_token_for_client(SCOPES)
+
 if "access_token" not in result:
-    print("Failed to get token")
+    print("Failed to get token:", result.get("error"), result.get("error_description"))
     exit(1)
 
 token = result["access_token"]
 headers = {"Authorization": f"Bearer {token}"}
 
+# --- FILES TO DOWNLOAD FROM PERSONAL ONEDRIVE "MY FILES" ---
 files = [
     ("work_hour_data", "tft_with_lead_2025-07-10.csv"),
     ("emp_details", "summary_2025-07-11.csv"),
     ("dept_tft_work_hour", "dept_tft_intern_count_2025-07-10.csv"),
 ]
 
+# Download each file
 for folder, filename in files:
-    url = f"https://graph.microsoft.com/v1.0/me/drive/root:/Documents/{folder}/{filename}:/content"
+    # PERSONAL ONEDRIVE: Do NOT use "Documents/"
+    url = f"https://graph.microsoft.com/v1.0/me/drive/root:/{folder}/{filename}:/content"
     out_dir = f"data/{folder}"
     os.makedirs(out_dir, exist_ok=True)
     out_path = f"{out_dir}/{filename}"
