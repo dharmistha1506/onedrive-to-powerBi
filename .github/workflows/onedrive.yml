@@ -1,8 +1,6 @@
 name: Combine OneDrive CSVs
 
 on:
-  schedule:
-    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 jobs:
@@ -14,6 +12,20 @@ jobs:
         with:
           python-version: '3.10'
       - run: pip install pandas requests msal
-      - run: python scripts/download_onedrive.py
-      - run: python scripts/combine_csv.py
-      - run: python scripts/upload_onedrive.py
+
+      - name: Download from OneDrive
+        env:
+          ONEDRIVE_CLIENT_ID: ${{ secrets.ONEDRIVE_CLIENT_ID }}
+          ONEDRIVE_TENANT_ID: ${{ secrets.ONEDRIVE_TENANT_ID }}
+          ONEDRIVE_CLIENT_SECRET: ${{ secrets.ONEDRIVE_CLIENT_SECRET }}
+        run: python scripts/download_onedrive.py
+
+      - name: Combine CSV files
+        run: python scripts/combine_csv.py
+
+      - name: Upload combined file to OneDrive
+        env:
+          ONEDRIVE_CLIENT_ID: ${{ secrets.ONEDRIVE_CLIENT_ID }}
+          ONEDRIVE_TENANT_ID: ${{ secrets.ONEDRIVE_TENANT_ID }}
+          ONEDRIVE_CLIENT_SECRET: ${{ secrets.ONEDRIVE_CLIENT_SECRET }}
+        run: python scripts/upload_onedrive.py
