@@ -3,10 +3,9 @@ import requests
 from msal import ConfidentialClientApplication
 
 CLIENT_ID = os.environ["ONEDRIVE_CLIENT_ID"]
-TENANT_ID = os.environ["ONEDRIVE_TENANT_ID"]
 CLIENT_SECRET = os.environ["ONEDRIVE_CLIENT_SECRET"]
 
-AUTHORITY = f"https://login.microsoftonline.com/{TENANT_ID}"
+AUTHORITY = "https://login.microsoftonline.com/consumers"
 SCOPES = ["https://graph.microsoft.com/.default"]
 
 app = ConfidentialClientApplication(
@@ -23,7 +22,7 @@ headers = {"Authorization": f"Bearer {token}"}
 
 combined_file = "data/combined/combined.csv"
 
-# Upload to PERSONAL OneDrive "My Files/combined_data/"
+# Upload to OneDrive personal "My Files/combined_data/"
 url = "https://graph.microsoft.com/v1.0/me/drive/root:/combined_data/combined.csv:/content"
 
 print("Uploading combined.csv to OneDrive...")
@@ -33,4 +32,3 @@ with open(combined_file, "rb") as f:
         print("Upload successful!")
     else:
         print(f"Upload failed: {resp.status_code} {resp.text}")
-
