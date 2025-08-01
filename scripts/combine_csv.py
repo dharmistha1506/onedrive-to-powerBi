@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 
-# Folders where download_onedrive.py stored the files
 folders = [
     "data/work_hour_data",
     "data/emp_details",
